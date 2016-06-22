@@ -1,0 +1,77 @@
+= Project Goats
+
+To create HPGL file from KiCad by whatever intermediate route possible.
+
+== KiCad
+
+KiCad has become an awesome free, opensource software package. Before all the Eagle users pile in to defend it, (I was once a paid for Eagle user) I'd like to point out the Eagle user licence for the free version. It says:
+"If you make (or save money) then you cannot use the free or lite version." So if you have a hobby project that (at some point in the future) either makes you money or "saves" you money then you are in breach of the the licence agreement. This means if you ever become rich using a PCB designed with Eagle they pwn you.
+
+KiCad on the other hand has no such restrictions. It's different but spend a week learning it and you'l find it's better and you can become wealthy using it. However, there's no easy way to make PBC using Roland Modela hardware. This is what this project is about.
+
+== Why?
+
+The Roland Modela is, apparently, a popular PCB milling machine and I have used one in the past to make Eagle designed PCBs. There is no (as far as I know) current way to produce PCBs on the Modela from KiCad however, as no one has written the software to do so, this project begins to rectify that situation.
+
+== HPGL
+
+This http://paulbourke.net/dataformats/hpgl/ says it all really, otherwise Wikipedia. Other sources of information are available of course. Libraries! You'll miss them when thary're gpne.
+
+== Goals
+
+To get this incorporated into FlatCam as an additional output format.  Otherwise as a stand alone converter from FlatCam to HPGL. The first option would be my ideal but that depends on FlatCam's managers.
+
+== Current Progress
+
+How it's supposed to currently works is:
+
+* Make your PCB and export all the gerbers.
+* Use FlatCad to make the isolation milling and drill file then save the FlatCad project. FlatCad, conveniently, saves all it's internal data to the project file in JSON format.
+* Open the saved file with this software and convert the isolation path files to HPGL.
+* Send those files to your Roland Modela. Or any hacked device that undestands HPGL.
+
+Linux and Python are required, as well as whatever depenencies that FlatCam requires. Windows users are welcome to provide patches to make it work on that wierd non-standards-complient system. As are all all other coders of course.
+
+It uses some code from https://github.com/scruss/hpgl_shapely which the develper admits is incomlete and I have adapted to not merely print the result on stdout but to pass back the HPGL to tha calling method. Contribute there too if you are interseted in this project. \The licence there is WTFPL (https://en.wikipedia.org/wiki/WTFPL which I had to look up).
+
+Ideally this would be incorporated into FlatCad to eliminate the external processing. 
+
+=== Status
+
+Very much scratch code. Also, to-date, untested on an actual machine. TODO
+
+It (will) output valid and compact HPGL but it is currently untested in Modela hardware (due to time and equipment constraints) and is definately non-toolpath optimal. Also there a missing depth codes and ... lotsa other stuff.
+
+The HPGL requires a lot of clean up and this needs a working plotter to test. currenly I don't have one, I borrow one as required but the owner uses it for "actual work" so it's not always available.
+ 
+It's incomplete and probably doesn't work as is, but it is a start and hopefully others will contribute.  Fork and code people!
+
+Look at:
+----
+http://paulbourke.net/dataformats/hpgl/
+http://toblerity.org/shapely/manual.html
+http://flatcam.org/
+http://kicad-pcb.org/
+http://www.cadsoftusa.com/download-eagle/freeware/ (about half way down ubder Limitation): "If you earn (or save) money by using the Freeware version of EAGLE Light, you have to register it." Note the "save" part.
+----
+
+== Running (on Linux)
+
+* Export your plt files form KiCad.
+* Open it in FlatCam
+* Process it as per FlatCam's manual
+* Save the FlatCam project. Don't worrey about saving the gerbers as you're not going to need them for this. Although why not?.
+* Note the FlatCam project file name. (In your head. If you need to write it down you are too dumb, or drunk, to go any further with this. No, really, because I need your help.)
+
+The bash command line:
+
+[source,cbash]
+kicad-hpgl.py the-FlatCam-project-file-you-just-saved
+
+Assuming you made kicad-hpgl.py executable with chmod +x ... Of course you did you're Linux geeks right?
+
+You should see three files, copper bottom, copper top and a drill file. (Filenames may change to protect the innocent).
+
+Look at the output then test, test, test.  Then open an issue (with a pull request or I'll ignore it as I'm not doing your bidding for free. Unless you attach some money via PayPal of course).
+
+
